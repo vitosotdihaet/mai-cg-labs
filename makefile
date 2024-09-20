@@ -3,7 +3,7 @@ PROJECTS := l1
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Ilib -O3
 
-SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-system
+SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-system -s
 
 BUILD_DIR := ./build
 

@@ -1,6 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 
-#include <math.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+
 
 
 sf::Vector2f directionFromInput() {
@@ -14,6 +18,10 @@ sf::Vector2f directionFromInput() {
     return sf::Vector2f(x, y);
 }
 
+float rotationFromInput() {
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::E) - sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
+}
+
 
 sf::Clock deltaClock;
 
@@ -21,7 +29,11 @@ int main() {
     const unsigned int windowWidth = 1600;
     const unsigned int windowHeight = 900;
 
-    const float speed = 1000;
+    const float movementSpeed = 1000;
+    const float rotationSpeed = 10;
+    const float scalingSpeed = 10;
+
+    glm::mat4 currentRectangleState();
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);
     
@@ -40,8 +52,7 @@ int main() {
 
         sf::Time deltaTime = deltaClock.restart();
 
-        const sf::Vector2f deltaDirection = directionFromInput() * deltaTime.asSeconds() * speed;
-        rectangle.setPosition(rectangle.getPosition() + deltaDirection);
+        // TODO: logic
 
         window.clear();
         window.draw(rectangle);
