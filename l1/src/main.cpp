@@ -10,7 +10,7 @@
 
 
 
-sf::Vector2f directionFromInput() {
+sf::Vector2f shiftFromInput() {
     float x = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) - sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
     float y = sf::Keyboard::isKeyPressed(sf::Keyboard::Down) - sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 
@@ -32,32 +32,26 @@ float rotationFromInput() {
 
 
 sf::Vector2f multiply(sf::Vector2f point, glm::mat3 matrix) {
-    float homoPoint[] = { point.x, point.y, 1 };
-    float outPoint[] = { 0, 0, 1 };
+    float homogeneousPoint[] = { point.x, point.y, 1 };
+    float resultPoint[] = { 0, 0, 1 };
 
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            outPoint[i] += matrix[i][j] * homoPoint[j];
+            resultPoint[i] += matrix[i][j] * homogeneousPoint[j];
         }
     }
 
-    return sf::Vector2f(outPoint[0], outPoint[1]);
+    return sf::Vector2f(resultPoint[0], resultPoint[1]);
 }
 
 
-void applyTransformaitonMatrix(const glm::mat3 &matrix, const sf::Vector2f initialPoints[4], sf::ConvexShape &rectangle) {
-    for (int i = 0; i < 4; ++i) {
-        sf::Vector2f realCoordinates = multiply(initialPoints[i], matrix);
+void applyTransformaitonMatrix(const glm::mat3 &matrix, const std::vector<sf::Vector2f> points, sf::ConvexShape &rectangle) {
+    for (int i = 0; i < points.size(); ++i) {
+        sf::Vector2f realCoordinates = multiply(points[i], matrix);
         rectangle.setPoint(i, realCoordinates);
     }
 }
 
-
-const glm::mat3 defaultTransformationMatrix = glm::mat3(
-    1., 0., 0.,
-    0., 1., 0.,
-    0., 0., 1.
-);
 
 const unsigned int windowWidth = 1280;
 const unsigned int windowHeight = 720;
@@ -71,11 +65,13 @@ sf::Clock deltaClock;
 
 int main() {
     sf::ConvexShape rectangle;
-    const sf::Vector2f rectanglePoints[4] = {
-        { 0, 0 },
-        { 0, 150 },
-        { 250, 150 },
-        { 250, 0 }
+    sf::Vector2f rectangleSize(250, 150);
+
+    const std::vector<sf::Vector2f> rectanglePoints = {
+        { 0,               0               },
+        { rectangleSize.x, 0               },
+        { rectangleSize.x, rectangleSize.y },
+        { 0,               rectangleSize.y }
     };
 
     rectangle.setPointCount(4);
@@ -84,11 +80,11 @@ int main() {
     rectangle.setFillColor(currentColor);
 
 
-    float currentScale = 1;
-    glm::mat3 scaleMatrix = defaultTransformationMatrix;
-
     float currentRotation = 0;
     glm::mat3 rotationMatrix = defaultTransformationMatrix;
+
+    float currentScale = 1;
+    glm::mat3 scaleMatrix = defaultTransformationMatrix;
 
     sf::Vector2f currentShift(0, 0);
     glm::mat3 shiftMatrix = defaultTransformationMatrix;
@@ -107,23 +103,22 @@ int main() {
 
         sf::Time deltaTime = deltaClock.restart();
 
+        // read rotation
+        float rotationDelta = rotationFromInput() * rotationSpeed * deltaTime.asSeconds();
+        currentRotation += rotationDelta;
+        setRotationMatrix(rotationMatrix, currentRotation, rectangleSize/2.f);
+
         // read scaling
         float scaleDelta = scaleFromInput() * scaleSpeed * deltaTime.asSeconds();
         currentScale += scaleDelta;
         setScaleMatrix(scaleMatrix, currentScale);
-        std::cout << scaleMatrix[0][0] << ' ' << scaleMatrix[1][1] << '\n';
-
-        // read rotation
-        float rotationDelta = rotationFromInput() * rotationSpeed * deltaTime.asSeconds();
-        currentRotation += rotationDelta;
-        setRotationMatrix(rotationMatrix, currentRotation);
 
         // read shift
-        sf::Vector2f shiftDelta = directionFromInput() * movementSpeed * deltaTime.asSeconds();
+        sf::Vector2f shiftDelta = shiftFromInput() * movementSpeed * deltaTime.asSeconds();
         currentShift += shiftDelta;
         setShiftMatrix(shiftMatrix, currentShift);
 
-        glm::mat3 transformationMatrix = scaleMatrix * rotationMatrix * shiftMatrix;
+        glm::mat3 transformationMatrix = rotationMatrix * scaleMatrix * shiftMatrix;
 
         // for (int i = 0; i < 3; ++i) {
         //     for (int j = 0; j < 3; ++j) {
@@ -132,6 +127,7 @@ int main() {
         //     std::cout << '\n';
         // }
         // std::cout << '\n';
+
  
         applyTransformaitonMatrix(transformationMatrix, rectanglePoints, rectangle);
 
