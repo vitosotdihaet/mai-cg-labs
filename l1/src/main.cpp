@@ -1,9 +1,10 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+
+#include <iostream>
 
 
 
@@ -22,6 +23,19 @@ float rotationFromInput() {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::E) - sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
 }
 
+sf::Vector2f multiply(sf::Vector2f point, glm::mat3 matrix) {
+    float homoPoint[] = { point.x, point.y, 1 };
+    float outPoint[] = { 0, 0, 1 };
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            outPoint[i] += matrix[i][j] * homoPoint[j];
+        }
+    }
+
+    return sf::Vector2f(outPoint[0], outPoint[1]);
+}
+
 
 sf::Clock deltaClock;
 
@@ -33,11 +47,27 @@ int main() {
     const float rotationSpeed = 10;
     const float scalingSpeed = 10;
 
-    glm::mat4 currentRectangleState();
+    glm::mat3 rectangleTransformationMatrix = glm::mat3(
+        1., 0., 0.,
+        0., 1., 0.,
+        0., 0., 1.
+    );
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);
     
-    sf::RectangleShape rectangle(sf::Vector2f(250, 150));
+    sf::Vector2f rectanglePoints[4] = {
+        { 0, 0 },
+        { 0, 150 },
+        { 250, 150 },
+        { 250, 0 }
+    };
+
+    sf::ConvexShape rectangle;
+    rectangle.setPointCount(4);
+    for (int i = 0; i < 4; ++i) {
+        rectangle.setPoint(i, rectanglePoints[i]);
+    }
+
     sf::Color currentColor(200, 30, 255);
     rectangle.setFillColor(currentColor);
 
@@ -53,6 +83,22 @@ int main() {
         sf::Time deltaTime = deltaClock.restart();
 
         // TODO: logic
+        sf::Vector2f directionDelta = directionFromInput() * movementSpeed * deltaTime.asSeconds();
+        rectangleTransformationMatrix[0][2] = directionDelta.x;
+        rectangleTransformationMatrix[1][2] = directionDelta.y;
+
+        // for (int i = 0; i < 3; ++i) {
+        //     for (int j = 0; j < 3; ++j) {
+        //         std::cout << rectangleTransformationMatrix[i][j] << ' ';
+        //     }
+        //     std::cout << '\n';
+        // }
+        // std::cout << '\n';
+
+        for (int i = 0; i < 4; ++i) {
+            rectanglePoints[i] = multiply(rectanglePoints[i], rectangleTransformationMatrix);
+            rectangle.setPoint(i, rectanglePoints[i]);
+        }
 
         window.clear();
         window.draw(rectangle);
