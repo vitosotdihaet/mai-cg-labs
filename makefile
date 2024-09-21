@@ -1,7 +1,7 @@
 PROJECTS := l1
 
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Ilib -O3
+CXXFLAGS := -std=c++17 -Wall -O3
 
 SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-system -s
 
@@ -11,7 +11,7 @@ all: $(PROJECTS)
 
 $(PROJECTS):
 	@echo "Building $@..."
-	$(CXX) $(CXXFLAGS) $(wildcard $@/src/*.cpp) -o $(BUILD_DIR)/$@ $(SFMLFLAGS)
+	$(CXX) $(CXXFLAGS) -I$@/lib $(wildcard $@/src/*.cpp) -o $(BUILD_DIR)/$@ $(SFMLFLAGS)
 
 clean:
 	@echo "Cleaning build directories..."
