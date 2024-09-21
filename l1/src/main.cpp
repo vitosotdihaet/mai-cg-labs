@@ -23,6 +23,11 @@ float rotationFromInput() {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::E) - sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
 }
 
+float scaleFromInput() {
+    return 2 * sf::Keyboard::isKeyPressed(sf::Keyboard::D) - 0.5 * sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+}
+
+
 sf::Vector2f multiply(sf::Vector2f point, glm::mat3 matrix) {
     float homoPoint[] = { point.x, point.y, 1 };
     float outPoint[] = { 0, 0, 1 };
@@ -45,7 +50,7 @@ int main() {
 
     const float movementSpeed = 1000;
     const float rotationSpeed = 10;
-    const float scalingSpeed = 10;
+    const float scaleSpeed = 1;
 
     glm::mat3 rectangleTransformationMatrix = glm::mat3(
         1., 0., 0.,
@@ -55,7 +60,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);
     
-    sf::Vector2f rectanglePoints[4] = {
+    const sf::Vector2f rectanglePoints[4] = {
         { 0, 0 },
         { 0, 150 },
         { 250, 150 },
@@ -84,8 +89,12 @@ int main() {
 
         // TODO: logic
         sf::Vector2f directionDelta = directionFromInput() * movementSpeed * deltaTime.asSeconds();
-        rectangleTransformationMatrix[0][2] = directionDelta.x;
-        rectangleTransformationMatrix[1][2] = directionDelta.y;
+        rectangleTransformationMatrix[0][2] += directionDelta.x;
+        rectangleTransformationMatrix[1][2] += directionDelta.y;
+
+        float scaleDelta = scaleFromInput() * scaleSpeed * deltaTime.asSeconds();
+        rectangleTransformationMatrix[0][0] *= (1. + scaleDelta);
+        rectangleTransformationMatrix[1][1] *= (1. + scaleDelta);
 
         // for (int i = 0; i < 3; ++i) {
         //     for (int j = 0; j < 3; ++j) {
@@ -96,8 +105,8 @@ int main() {
         // std::cout << '\n';
 
         for (int i = 0; i < 4; ++i) {
-            rectanglePoints[i] = multiply(rectanglePoints[i], rectangleTransformationMatrix);
-            rectangle.setPoint(i, rectanglePoints[i]);
+            sf::Vector2f realCoordinates = multiply(rectanglePoints[i], rectangleTransformationMatrix);
+            rectangle.setPoint(i, realCoordinates);
         }
 
         window.clear();
