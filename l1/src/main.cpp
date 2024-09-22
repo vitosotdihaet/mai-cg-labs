@@ -45,7 +45,7 @@ sf::Vector2f multiply(sf::Vector2f point, glm::mat3 matrix) {
 }
 
 
-void applyTransformaitonMatrix(const glm::mat3 &matrix, const std::vector<sf::Vector2f> points, sf::ConvexShape &rectangle) {
+void applyModelMatrix(const glm::mat3 &matrix, const std::vector<sf::Vector2f> points, sf::ConvexShape &rectangle) {
     for (int i = 0; i < points.size(); ++i) {
         sf::Vector2f realCoordinates = multiply(points[i], matrix);
         rectangle.setPoint(i, realCoordinates);
@@ -81,14 +81,23 @@ int main() {
 
 
     float currentRotation = 0;
-    glm::mat3 rotationMatrix = defaultTransformationMatrix;
+    glm::mat3 rotationMatrix = glm::mat3(1.f);
 
     float currentScale = 1;
-    glm::mat3 scaleMatrix = defaultTransformationMatrix;
+    glm::mat3 scaleMatrix = glm::mat3(1.f);
 
     sf::Vector2f currentShift(0, 0);
-    glm::mat3 shiftMatrix = defaultTransformationMatrix;
+    glm::mat3 shiftMatrix = glm::mat3(1.f);
 
+
+    glm::mat3 shiftToCenterMatrix = glm::mat3(1.f);
+    setShiftMatrix(shiftToCenterMatrix, rectangleSize/2.f);
+
+    glm::mat3 shiftFromCenterMatrix = glm::mat3(1.f);
+    setShiftMatrix(shiftFromCenterMatrix, -rectangleSize/2.f);
+
+
+    glm::mat3 modelMatrix = glm::mat3(1.);
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);    
 
@@ -118,18 +127,17 @@ int main() {
         currentShift += shiftDelta;
         setShiftMatrix(shiftMatrix, currentShift);
 
-        glm::mat3 transformationMatrix = rotationMatrix * scaleMatrix * shiftMatrix;
-
         // for (int i = 0; i < 3; ++i) {
         //     for (int j = 0; j < 3; ++j) {
-        //         std::cout << transformationMatrix[i][j] << ' ';
+        //         std::cout << modelMatrix[i][j] << ' ';
         //     }
         //     std::cout << '\n';
         // }
         // std::cout << '\n';
 
- 
-        applyTransformaitonMatrix(transformationMatrix, rectanglePoints, rectangle);
+        modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
+
+        applyModelMatrix(modelMatrix, rectanglePoints, rectangle);
 
         window.clear();
         window.draw(rectangle);
