@@ -2,14 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include <iostream>
-
-
-sf::Vector2f multiplyHomogenous(sf::Vector2f point, glm::mat3 matrix) {
-    glm::vec3 homogeneousPoint(point.x, point.y, 1.);
-    glm::vec3 resultPoint = homogeneousPoint * matrix;
-    return sf::Vector2f(resultPoint[0], resultPoint[1]);
-}
+#include "matriciesop.hpp"
 
 
 
@@ -40,13 +33,15 @@ public:
 
         modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
 
-        for (int i = 0; i < shapePoints.size(); ++i) {
+        for (uint64_t i = 0; i < shapePoints.size(); ++i) {
             sf::Vector2f realCoordinates = multiplyHomogenous(shapePoints[i], modelMatrix);
             this->shape.setPoint(i, realCoordinates);
         }
 
-        this->shapeColor.r = this->initialShapeColor.r + (int) (this->shift.x / 10.) % 255;
-        this->shapeColor.b = this->initialShapeColor.b + (int) (this->shift.y / 5.) % 255;
+        this->shapeColor.r = this->initialShapeColor.r + (int) ((this->shift.x + this->shift.y) / 10.) % 255;
+        this->shapeColor.g = this->initialShapeColor.g + (int) (this->scaleFactor * 50.) % 255;
+        this->shapeColor.b = this->initialShapeColor.b + (int) (this->rotationAngle * 20.) % 255;
+
         this->shape.setFillColor(this->shapeColor);
     }
 
@@ -91,13 +86,5 @@ private:
         this->scaleMatrix[1][1] = this->scaleFactor;
     }
 
-    void printModelMatrix() {
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                std::cout << this->modelMatrix[i][j] << ' ';
-            }
-            std::cout << '\n';
-        }
-        std::cout << '\n';
-    }
+    
 };

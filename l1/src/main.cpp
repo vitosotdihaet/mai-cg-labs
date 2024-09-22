@@ -1,7 +1,5 @@
 #include <SFML/Graphics.hpp>
 
-#include <glm/glm.hpp>
-
 #include "model.hpp"
 
 
@@ -52,7 +50,7 @@ int main() {
     rectangle.setFillColor(currentColor);
     rectangle.setPointCount(rectanglePoints.size());
 
-    for (int i = 0; i < rectanglePoints.size(); ++i) {
+    for (uint64_t i = 0; i < rectanglePoints.size(); ++i) {
         rectangle.setPoint(i, rectanglePoints[i]);
     }
 
