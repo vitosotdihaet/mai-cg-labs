@@ -1,12 +1,8 @@
 #include <SFML/Graphics.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
 
-#include "matriciesop.hpp"
-
-#include <iostream>
+#include "model.hpp"
 
 
 
@@ -23,33 +19,11 @@ sf::Vector2f shiftFromInput() {
 }
 
 float scaleFromInput() {
-    return 2. * sf::Keyboard::isKeyPressed(sf::Keyboard::D) - 0.9 * sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+    return 2. * sf::Keyboard::isKeyPressed(sf::Keyboard::D) - 0.95 * sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 }
 
 float rotationFromInput() {
     return sf::Keyboard::isKeyPressed(sf::Keyboard::E) - sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
-}
-
-
-sf::Vector2f multiply(sf::Vector2f point, glm::mat3 matrix) {
-    float homogeneousPoint[] = { point.x, point.y, 1 };
-    float resultPoint[] = { 0, 0, 1 };
-
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            resultPoint[i] += matrix[i][j] * homogeneousPoint[j];
-        }
-    }
-
-    return sf::Vector2f(resultPoint[0], resultPoint[1]);
-}
-
-
-void applyModelMatrix(const glm::mat3 &matrix, const std::vector<sf::Vector2f> points, sf::ConvexShape &rectangle) {
-    for (int i = 0; i < points.size(); ++i) {
-        sf::Vector2f realCoordinates = multiply(points[i], matrix);
-        rectangle.setPoint(i, realCoordinates);
-    }
 }
 
 
@@ -66,38 +40,23 @@ sf::Clock deltaClock;
 int main() {
     sf::ConvexShape rectangle;
     sf::Vector2f rectangleSize(250, 150);
-
     const std::vector<sf::Vector2f> rectanglePoints = {
         { 0,               0               },
         { rectangleSize.x, 0               },
         { rectangleSize.x, rectangleSize.y },
+        // { rectangleSize.x/2.f, rectangleSize.y * 2.f },
         { 0,               rectangleSize.y }
     };
 
-    rectangle.setPointCount(4);
-
-    sf::Color currentColor(200, 30, 255);
+    sf::Color currentColor(50, 50, 50);
     rectangle.setFillColor(currentColor);
+    rectangle.setPointCount(rectanglePoints.size());
 
+    for (int i = 0; i < rectanglePoints.size(); ++i) {
+        rectangle.setPoint(i, rectanglePoints[i]);
+    }
 
-    float currentRotation = 0;
-    glm::mat3 rotationMatrix = glm::mat3(1.f);
-
-    float currentScale = 1;
-    glm::mat3 scaleMatrix = glm::mat3(1.f);
-
-    sf::Vector2f currentShift(0, 0);
-    glm::mat3 shiftMatrix = glm::mat3(1.f);
-
-
-    glm::mat3 shiftToCenterMatrix = glm::mat3(1.f);
-    setShiftMatrix(shiftToCenterMatrix, rectangleSize/2.f);
-
-    glm::mat3 shiftFromCenterMatrix = glm::mat3(1.f);
-    setShiftMatrix(shiftFromCenterMatrix, -rectangleSize/2.f);
-
-
-    glm::mat3 modelMatrix = glm::mat3(1.);
+    Model rectangleModel(rectangle);
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);    
 
@@ -114,30 +73,10 @@ int main() {
 
         // read rotation
         float rotationDelta = rotationFromInput() * rotationSpeed * deltaTime.asSeconds();
-        currentRotation += rotationDelta;
-        setRotationMatrix(rotationMatrix, currentRotation, rectangleSize/2.f);
-
-        // read scaling
         float scaleDelta = scaleFromInput() * scaleSpeed * deltaTime.asSeconds();
-        currentScale += scaleDelta;
-        setScaleMatrix(scaleMatrix, currentScale);
-
-        // read shift
         sf::Vector2f shiftDelta = shiftFromInput() * movementSpeed * deltaTime.asSeconds();
-        currentShift += shiftDelta;
-        setShiftMatrix(shiftMatrix, currentShift);
 
-        // for (int i = 0; i < 3; ++i) {
-        //     for (int j = 0; j < 3; ++j) {
-        //         std::cout << modelMatrix[i][j] << ' ';
-        //     }
-        //     std::cout << '\n';
-        // }
-        // std::cout << '\n';
-
-        modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
-
-        applyModelMatrix(modelMatrix, rectanglePoints, rectangle);
+        rectangleModel.update(shiftDelta, rotationDelta, scaleDelta);
 
         window.clear();
         window.draw(rectangle);
