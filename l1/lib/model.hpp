@@ -29,7 +29,7 @@ private:
 
     glm::mat3 modelMatrix = glm::mat3(1.);
 
-    void updateShiftMatrix();
-    void updateRotationMatrix();
-    void updateScaleMatrix();
+    void updateShiftMatrix() noexcept;
+    void updateRotationMatrix() noexcept;
+    void updateScaleMatrix() noexcept;
 };

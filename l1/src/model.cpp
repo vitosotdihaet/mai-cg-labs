@@ -65,12 +65,12 @@ void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDel
     this->shape.setFillColor(this->shapeColor);
 }
 
-void Model::updateShiftMatrix() {
+void Model::updateShiftMatrix() noexcept {
     this->shiftMatrix[0][2] = shift.x;
     this->shiftMatrix[1][2] = shift.y;
 }
 
-void Model::updateRotationMatrix() {
+void Model::updateRotationMatrix() noexcept {
     float cosine = cos(this->rotationAngle);
     float sine = sin(this->rotationAngle);
 
@@ -80,7 +80,7 @@ void Model::updateRotationMatrix() {
     this->rotationMatrix[1][1] = cosine;
 }
 
-void Model::updateScaleMatrix() {
+void Model::updateScaleMatrix() noexcept {
     this->scaleMatrix[0][0] = this->scaleFactor;
     this->scaleMatrix[1][1] = this->scaleFactor;
 }    

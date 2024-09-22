@@ -42,11 +42,12 @@ int main() {
         { 0,               0               },
         { rectangleSize.x, 0               },
         { rectangleSize.x, rectangleSize.y },
+        // uncomment for a polygon
         // { rectangleSize.x/2.f, rectangleSize.y * 2.f },
         { 0,               rectangleSize.y }
     };
 
-    sf::Color currentColor(50, 50, 50);
+    const sf::Color currentColor(50, 50, 50);
     rectangle.setFillColor(currentColor);
     rectangle.setPointCount(rectanglePoints.size());
 
@@ -67,9 +68,10 @@ int main() {
             }
         }
 
+        // fps independent rendering
         sf::Time deltaTime = deltaClock.restart();
 
-        // read rotation
+        // read parameters
         float rotationDelta = rotationFromInput() * rotationSpeed * deltaTime.asSeconds();
         float scaleDelta = scaleFromInput() * scaleSpeed * deltaTime.asSeconds();
         sf::Vector2f shiftDelta = shiftFromInput() * movementSpeed * deltaTime.asSeconds();
