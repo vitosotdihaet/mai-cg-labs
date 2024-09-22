@@ -11,25 +11,50 @@ Model::Model(sf::ConvexShape& shape) : shape(shape), initialShapeColor(shape.get
         this->shapeCenter += point / (float) pointCount;
     }
 
-    this->shiftToCenterMatrix[0][2] = this->shapeCenter.x;
-    this->shiftToCenterMatrix[1][2] = this->shapeCenter.y;
-
     this->shiftFromCenterMatrix[0][2] = -this->shapeCenter.x;
     this->shiftFromCenterMatrix[1][2] = -this->shapeCenter.y;
+
+    this->shiftToCenterMatrix[0][2] = this->shapeCenter.x;
+    this->shiftToCenterMatrix[1][2] = this->shapeCenter.y;
 }
 
 void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDelta, const float& scaleFactorDelta) {
     this->shift += shiftDelta;
-    updateShiftMatrix();
     this->rotationAngle += rotationAngleDelta;
-    updateRotationMatrix();
     this->scaleFactor += scaleFactorDelta;
+
+#ifdef MANUAL_MATRIX_MULTIPLICATION
+    // TODO: think about it...
+    float s = this->scaleFactor;
+    float x = this->shift.x;
+    float y = this->shift.y;
+    float cx = this->shapeCenter.x;
+    float cy = this->shapeCenter.y;
+    float cosRotation = cos(this->rotationAngle);
+    float sinRotation = sin(this->rotationAngle);
+
+    this->modelMatrix[0][0] = s * cosRotation;
+    this->modelMatrix[0][1] = -s * sinRotation;
+    this->modelMatrix[0][2] = x * s * cosRotation - y * s * sinRotation + s * cx * cosRotation - s * cy * sinRotation - cx;
+
+    this->modelMatrix[1][0] = s * sinRotation;
+    this->modelMatrix[1][1] = s * cosRotation;
+    this->modelMatrix[1][2] = x * s * sinRotation + y * s * cosRotation + s * cx * sinRotation - s * cy * cosRotation - cy;
+
+    this->modelMatrix[2][2] = 1;
+
+    printMatrix(modelMatrix);
+#else
+    updateShiftMatrix();
+    updateRotationMatrix();
     updateScaleMatrix();
 
-    modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
+    this->modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
+#endif
+
 
     for (uint64_t i = 0; i < shapePoints.size(); ++i) {
-        sf::Vector2f realCoordinates = multiplyHomogenous(shapePoints[i], modelMatrix);
+        sf::Vector2f realCoordinates = multiplyHomogenous(shapePoints[i], this->modelMatrix);
         this->shape.setPoint(i, realCoordinates);
     }
 
@@ -47,11 +72,11 @@ void Model::updateShiftMatrix() {
 
 void Model::updateRotationMatrix() {
     float cosine = cos(this->rotationAngle);
-    float sinus = sin(this->rotationAngle);
+    float sine = sin(this->rotationAngle);
 
     this->rotationMatrix[0][0] = cosine;
-    this->rotationMatrix[0][1] = -sinus;
-    this->rotationMatrix[1][0] = sinus;
+    this->rotationMatrix[0][1] = -sine;
+    this->rotationMatrix[1][0] = sine;
     this->rotationMatrix[1][1] = cosine;
 }
 
