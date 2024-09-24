@@ -65,7 +65,14 @@ int main() {
     sf::Font buttonFont;
     buttonFont.loadFromFile("./resources/fonts/LiberationMono-Bold.ttf");
 
-    Button button("toggle\ncolors", buttonShape, buttonFont, buttonPosition, button::style::none);
+    Button button("toggle\ncolors", buttonShape, buttonFont, buttonPosition);
+    button.setColors(
+        sf::Color(255, 255, 255),
+        sf::Color(75, 75, 75),
+        sf::Color(10, 10, 10, 200),
+        sf::Color(50, 50, 50, 200),
+        sf::Color(75, 75, 75, 200)
+    );
 
 
     // set up the rectangle model
