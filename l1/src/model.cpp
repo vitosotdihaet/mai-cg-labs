@@ -49,7 +49,7 @@ void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDel
     updateRotationMatrix();
     updateScaleMatrix();
 
-    this->modelMatrix = shiftFromCenterMatrix * rotationMatrix * scaleMatrix * shiftToCenterMatrix * shiftMatrix;
+    this->modelMatrix = this->shiftFromCenterMatrix * this->rotationMatrix * this->scaleMatrix * this->shiftToCenterMatrix * this->shiftMatrix;
 #endif
 
 
@@ -58,7 +58,7 @@ void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDel
         this->shape.setPoint(i, realCoordinates);
     }
 
-    if (color) {
+    if (this->changingColor) {
         this->shapeColor.r = this->initialShapeColor.r + (int) ((this->shift.x + this->shift.y) / 10.) % 255;
         this->shapeColor.g = this->initialShapeColor.g + (int) (this->scaleFactor * 50.) % 255;
         this->shapeColor.b = this->initialShapeColor.b + (int) (this->rotationAngle * 20.) % 255;

@@ -9,7 +9,7 @@ public:
     Model(sf::ConvexShape& shape);
     void update(const sf::Vector2f& shiftDelta, const float& rotationAngleDelta, const float& scaleFactorDelta);
 
-    void toggleColors() { this->color = !this->color; };
+    void toggleColors() { this->changingColor = !this->changingColor; };
 
 private:
     sf::ConvexShape& shape;
@@ -18,7 +18,7 @@ private:
     sf::Color initialShapeColor = sf::Color::White;
     sf::Color shapeColor = initialShapeColor;
 
-    bool color = true;
+    bool changingColor = true;
 
     sf::Vector2f shift = sf::Vector2f(0, 0);
     float rotationAngle = 0;

@@ -57,6 +57,22 @@ const std::vector<sf::Vector2f> buttonShapePoints = {
 
 
 int main() {
+    // set up the rectangle model
+    sf::ConvexShape rectangle(buttonShapePoints.size());
+
+    // set initial rectangle color
+    const sf::Color currentColor(50, 50, 50);
+    rectangle.setFillColor(currentColor);
+
+    // set initial rectangle points
+    for (uint64_t i = 0; i < rectanglePoints.size(); ++i) {
+        rectangle.setPoint(i, rectanglePoints[i]);
+    }
+
+    // create a model from rectangle
+    Model rectangleModel(rectangle);
+
+    // set up the color toggle button
     sf::ConvexShape buttonShape(buttonShapePoints.size());
     for (uint64_t i = 0; i < buttonShapePoints.size(); ++i) {
         buttonShape.setPoint(i, buttonShapePoints[i]);
@@ -73,23 +89,6 @@ int main() {
         sf::Color(50, 50, 50, 200),
         sf::Color(75, 75, 75, 200)
     );
-
-
-    // set up the rectangle model
-    sf::ConvexShape rectangle(buttonShapePoints.size());
-
-    // set initial rectangle color
-    const sf::Color currentColor(50, 50, 50);
-    rectangle.setFillColor(currentColor);
-
-    // set initial rectangle points
-    for (uint64_t i = 0; i < rectanglePoints.size(); ++i) {
-        rectangle.setPoint(i, rectanglePoints[i]);
-    }
-
-    // create a model from rectangle
-    Model rectangleModel(rectangle);
-
 
     button.setCallback([&rectangleModel]() {
         rectangleModel.toggleColors();
