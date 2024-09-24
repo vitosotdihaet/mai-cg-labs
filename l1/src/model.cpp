@@ -58,9 +58,13 @@ void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDel
         this->shape.setPoint(i, realCoordinates);
     }
 
-    this->shapeColor.r = this->initialShapeColor.r + (int) ((this->shift.x + this->shift.y) / 10.) % 255;
-    this->shapeColor.g = this->initialShapeColor.g + (int) (this->scaleFactor * 50.) % 255;
-    this->shapeColor.b = this->initialShapeColor.b + (int) (this->rotationAngle * 20.) % 255;
+    if (color) {
+        this->shapeColor.r = this->initialShapeColor.r + (int) ((this->shift.x + this->shift.y) / 10.) % 255;
+        this->shapeColor.g = this->initialShapeColor.g + (int) (this->scaleFactor * 50.) % 255;
+        this->shapeColor.b = this->initialShapeColor.b + (int) (this->rotationAngle * 20.) % 255;
+    } else {
+        this->shapeColor = this->initialShapeColor;
+    }
 
     this->shape.setFillColor(this->shapeColor);
 }
