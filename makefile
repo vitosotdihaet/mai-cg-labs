@@ -1,7 +1,7 @@
 PROJECTS := l1
 
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -O3
+CXXFLAGS := -std=c++17 -Wall
 
 SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-system -s
 

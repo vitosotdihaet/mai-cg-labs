@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "model.hpp"
-
+#include "button.hpp"
 
 
 sf::Vector2f shiftFromInput() {
@@ -17,7 +17,7 @@ sf::Vector2f shiftFromInput() {
 }
 
 float scaleFromInput() {
-    return 2. * sf::Keyboard::isKeyPressed(sf::Keyboard::D) - 0.95 * sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 }
 
 float rotationFromInput() {
@@ -25,8 +25,7 @@ float rotationFromInput() {
 }
 
 
-const unsigned int windowWidth = 1280;
-const unsigned int windowHeight = 720;
+const sf::Vector2i windowSize(1280, 720);
 
 const float movementSpeed = 1000;
 const float rotationSpeed = 5;
@@ -35,30 +34,62 @@ const float scaleSpeed = 2;
 sf::Clock deltaClock;
 
 
-int main() {
-    sf::ConvexShape rectangle;
-    sf::Vector2f rectangleSize(250, 150);
-    const std::vector<sf::Vector2f> rectanglePoints = {
-        { 0,               0               },
-        { rectangleSize.x, 0               },
-        { rectangleSize.x, rectangleSize.y },
-        // uncomment for a polygon
-        // { rectangleSize.x/2.f, rectangleSize.y * 2.f },
-        { 0,               rectangleSize.y }
-    };
+const sf::Vector2f rectangleSize(250, 150);
+const std::vector<sf::Vector2f> rectanglePoints = {
+    { 0,               0               },
+    { rectangleSize.x, 0               },
+    { rectangleSize.x, rectangleSize.y },
+    // uncomment for a polygon
+    // { rectangleSize.x/2.f, rectangleSize.y * 2.f },
+    { 0,               rectangleSize.y }
+};
 
+
+const sf::Vector2f buttonPosition(1200, 55);
+const sf::Vector2f buttonSize(150, 100);
+const std::vector<sf::Vector2f> buttonShapePoints = {
+    { 0,            0            },
+    { buttonSize.x, 0            },
+    { buttonSize.x, buttonSize.y },
+    { 0,            buttonSize.y }
+};
+
+
+
+int main() {
+    sf::ConvexShape buttonShape(buttonShapePoints.size());
+    for (uint64_t i = 0; i < buttonShapePoints.size(); ++i) {
+        buttonShape.setPoint(i, buttonShapePoints[i]);
+    }
+
+    sf::Font buttonFont;
+    buttonFont.loadFromFile("./resources/fonts/LiberationMono-Bold.ttf");
+
+    Button button("toggle\ncolors", buttonShape, buttonFont, buttonPosition, button::style::none);
+
+
+    // set up the rectangle model
+    sf::ConvexShape rectangle(buttonShapePoints.size());
+
+    // set initial rectangle color
     const sf::Color currentColor(50, 50, 50);
     rectangle.setFillColor(currentColor);
-    rectangle.setPointCount(rectanglePoints.size());
 
+    // set initial rectangle points
     for (uint64_t i = 0; i < rectanglePoints.size(); ++i) {
         rectangle.setPoint(i, rectanglePoints[i]);
     }
 
+    // create a model from rectangle
     Model rectangleModel(rectangle);
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Lab 1: Floating rectangle", sf::Style::Close);    
 
+    button.setCallback([&rectangleModel]() {
+        rectangleModel.toggleColors();
+    });
+
+
+    sf::RenderWindow window(sf::VideoMode(windowSize.x, windowSize.y), "Lab 1: Floating rectangle", sf::Style::Close);
     while (window.isOpen()) {
         sf::Event event;
 
@@ -66,20 +97,26 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+            button.update(event, window);
         }
 
         // fps independent rendering
         sf::Time deltaTime = deltaClock.restart();
 
+        float dt = deltaTime.asSeconds();
+
+
         // read parameters
-        float rotationDelta = rotationFromInput() * rotationSpeed * deltaTime.asSeconds();
-        float scaleDelta = scaleFromInput() * scaleSpeed * deltaTime.asSeconds();
-        sf::Vector2f shiftDelta = shiftFromInput() * movementSpeed * deltaTime.asSeconds();
+        float rotationDelta = rotationFromInput() * rotationSpeed * dt;
+        float scaleDelta = scaleFromInput() * scaleSpeed * dt;
+        sf::Vector2f shiftDelta = shiftFromInput() * movementSpeed * dt;
 
         rectangleModel.update(shiftDelta, rotationDelta, scaleDelta);
 
+
         window.clear();
         window.draw(rectangle);
+        window.draw(button);
         window.display();
     }
 
