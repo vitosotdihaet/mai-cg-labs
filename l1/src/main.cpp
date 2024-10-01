@@ -45,8 +45,8 @@ const std::vector<sf::Vector2f> rectanglePoints = {
 };
 
 
-const sf::Vector2f buttonPosition(1200, 55);
-const sf::Vector2f buttonSize(150, 50);
+const sf::Vector2f buttonPosition(1212.5, 32.5);
+const sf::Vector2f buttonSize(125, 55);
 const std::vector<sf::Vector2f> buttonShapePoints = {
     { 0,            0            },
     { buttonSize.x, 0            },
@@ -85,9 +85,9 @@ int main() {
     button.setColors(
         sf::Color(255, 255, 255),
         sf::Color(75, 75, 75),
-        sf::Color(10, 10, 10, 200),
-        sf::Color(50, 50, 50, 200),
-        sf::Color(75, 75, 75, 200)
+        sf::Color(15, 15, 15, 100),
+        sf::Color(50, 50, 50, 100),
+        sf::Color(75, 75, 75, 100)
     );
     button.setFontSize(24);
 
