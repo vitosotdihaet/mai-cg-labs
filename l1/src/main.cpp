@@ -89,6 +89,7 @@ int main() {
         sf::Color(50, 50, 50, 200),
         sf::Color(75, 75, 75, 200)
     );
+    button.setFontSize(32);
 
     button.setCallback([&rectangleModel]() {
         rectangleModel.toggleColors();

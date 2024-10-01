@@ -58,7 +58,7 @@ class Button : public sf::Drawable {
         sf::Uint32 state = button::state::normal;
 
         sf::Font font;
-        unsigned int fontSize;
+        unsigned int fontSize = 14;
 
         sf::Text text;
         sf::Text textShadow;

@@ -1,5 +1,7 @@
-#include <button.hpp>
+#include "button.hpp"
 
+
+#include <iostream>
 
 Button::Button(const std::string& text, sf::ConvexShape& shape, const sf::Font& font, const sf::Vector2f& position) : position(position) {
     // default colors
@@ -13,13 +15,8 @@ Button::Button(const std::string& text, sf::ConvexShape& shape, const sf::Font& 
     // set up the text
     this->text.setString(text);
     this->text.setFont(font);
-    this->text.setOrigin(this->text.getGlobalBounds().width/2, this->text.getGlobalBounds().height/2);
-    this->text.setPosition(this->shape.getPosition());
     this->text.setFillColor(this->textColor);
-
-    this->textShadow = this->text;
-    this->textShadow.setPosition(this->text.getPosition() - sf::Vector2f(3, 3));
-    this->textShadow.setFillColor(this->textShadowColor);
+    this->setFontSize(this->fontSize);
 }
 
 
@@ -27,7 +24,11 @@ void Button::setFontSize(const unsigned int& fontSize) {
     this->fontSize = fontSize;
 
     this->text.setCharacterSize(this->fontSize);
-    this->text.setOrigin(this->text.getGlobalBounds().width/2, this->text.getGlobalBounds().height/2);
+    this->text.setOrigin(
+        this->text.getLocalBounds().width/2 + this->text.getLocalBounds().left,
+        this->text.getLocalBounds().height/2 + this->text.getLocalBounds().top
+    );
+    this->text.setPosition(this->shape.getPosition());
 
     this->textShadow = this->text;
     this->textShadow.setPosition(this->text.getPosition() - sf::Vector2f(3, 3));
@@ -49,25 +50,15 @@ void Button::setColors(
 }
 
 void Button::update(const sf::Event& event, const sf::RenderWindow& window) {
-    // perform updates for settings from user
-    this->shape.setOrigin(this->shape.getGlobalBounds().width/2, this->shape.getGlobalBounds().height/2);
-
-    this->shape.setPosition(this->position);
-    this->text.setOrigin(this->text.getGlobalBounds().width/2, this->text.getGlobalBounds().height/2);
-    this->text.setPosition(this->shape.getPosition());
-    this->text.setFillColor(this->textColor);
-
-    this->textShadow = this->text;
-    this->textShadow.setPosition(this->text.getPosition() + sf::Vector2f(3, -3));
-    this->textShadow.setFillColor(this->textShadowColor);
-
     // perform updates for user mouse interactions
-    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+    const sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+    const sf::Vector2f shapePosition = this->shape.getPosition();
+    const sf::FloatRect shapeBounds = this->shape.getGlobalBounds();
 
-    bool mouseInButton = mousePosition.x >= this->shape.getPosition().x - this->shape.getGlobalBounds().width/2
-                      && mousePosition.x <= this->shape.getPosition().x + this->shape.getGlobalBounds().width/2
-                      && mousePosition.y >= this->shape.getPosition().y - this->shape.getGlobalBounds().height/2
-                      && mousePosition.y <= this->shape.getPosition().y + this->shape.getGlobalBounds().height/2;
+    bool mouseInButton = mousePosition.x >= shapePosition.x - shapeBounds.width/2
+                      && mousePosition.x <= shapePosition.x + shapeBounds.width/2
+                      && mousePosition.y >= shapePosition.y - shapeBounds.height/2
+                      && mousePosition.y <= shapePosition.y + shapeBounds.height/2;
 
     if (mouseInButton) {
         if (event.type == sf::Event::MouseMoved) {
@@ -91,7 +82,6 @@ void Button::update(const sf::Event& event, const sf::RenderWindow& window) {
     switch (this->state) {
         case button::state::normal:
             this->shape.setFillColor(this->backgroundNormalColor);
-            this->text.setFillColor(this->textColor);
             break;
 
         case button::state::hovered:
@@ -100,9 +90,6 @@ void Button::update(const sf::Event& event, const sf::RenderWindow& window) {
 
         case button::state::clicked:
             this->shape.setFillColor(this->backgroundClickedColor);
-            break;
-        
-        default:
             break;
     }
 }
