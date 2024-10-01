@@ -46,7 +46,7 @@ const std::vector<sf::Vector2f> rectanglePoints = {
 
 
 const sf::Vector2f buttonPosition(1200, 55);
-const sf::Vector2f buttonSize(150, 100);
+const sf::Vector2f buttonSize(150, 50);
 const std::vector<sf::Vector2f> buttonShapePoints = {
     { 0,            0            },
     { buttonSize.x, 0            },
@@ -89,7 +89,7 @@ int main() {
         sf::Color(50, 50, 50, 200),
         sf::Color(75, 75, 75, 200)
     );
-    button.setFontSize(32);
+    button.setFontSize(24);
 
     button.setCallback([&rectangleModel]() {
         rectangleModel.toggleColors();
