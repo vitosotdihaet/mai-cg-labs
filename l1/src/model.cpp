@@ -21,7 +21,7 @@ Model::Model(sf::ConvexShape& shape) : shape(shape), initialShapeColor(shape.get
 void Model::update(const sf::Vector2f& shiftDelta, const float& rotationAngleDelta, const float& scaleFactorDelta) {
     this->shift += shiftDelta;
     this->rotationAngle += rotationAngleDelta;
-    this->scaleFactor += scaleFactorDelta;
+    this->scaleFactor = std::max(this->scaleFactor + scaleFactorDelta, this->minimalScale);
 
 #ifdef MANUAL_MATRIX_MULTIPLICATION
     // TODO: think about it...
