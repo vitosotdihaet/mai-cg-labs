@@ -46,9 +46,9 @@ void setViewMatrix(glm::mat4 &m, const glm::vec3 &eye, const glm::vec3 &lookat, 
 
     m = glm::mat4(1.0f);
 
-    m[0][0] = right.x;   m[1][0] = right.y;   m[2][0] = right.z;
-    m[0][1] = up.x;      m[1][1] = up.y;      m[2][1] = up.z;
-    m[0][2] = forward.x; m[1][2] = forward.y; m[2][2] = forward.z;
+    m[0][0] = right.x;               m[1][0] = right.y;            m[2][0] = right.z;
+    m[0][1] = up.x;                  m[1][1] = up.y;               m[2][1] = up.z;
+    m[0][2] = forward.x;             m[1][2] = forward.y;          m[2][2] = forward.z;
     m[3][0] = -glm::dot(right, eye); m[3][1] = -glm::dot(up, eye); m[3][2] = -glm::dot(forward, eye);
 }
 
