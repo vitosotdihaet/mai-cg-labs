@@ -52,13 +52,13 @@ void setViewMatrix(glm::mat4 &m, const glm::vec3 &eye, const glm::vec3 &lookat, 
     m[3][0] = -glm::dot(right, eye); m[3][1] = -glm::dot(up, eye); m[3][2] = -glm::dot(forward, eye);
 }
 
-void setProjectionMatrix(glm::mat4 &m, const float fov, const double near, const double far, const double aspectRatio) noexcept {
-    float tanHalfFov = tan(glm::radians(fov) / 2.0f);
+void setPerspectiveProjectionMatrix(glm::mat4 &m, const float fov, const double near, const double far, const double aspectRatio) noexcept {
+    float tanHalfFov = glm::tan(glm::radians(fov) * 0.5f);
     float range = far - near;
 
     m[0][0] = 1.0f / (aspectRatio * tanHalfFov);
     m[1][1] = 1.0f / tanHalfFov;
-    m[2][2] = -(far + near) / range;
-    m[2][3] = -1.0f;
-    m[3][2] = -(2.0f * far * near) / range;
+    m[2][2] = far / (far - near);
+    m[2][3] = 1.0f;
+    m[3][2] = -(near * far) / (far - near);
 }

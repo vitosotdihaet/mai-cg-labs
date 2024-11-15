@@ -41,15 +41,11 @@ namespace camera {
 
 glm::vec2 lastMousePosition(0.0f);
 
-glm::mat4 projection(1.0f);
+glm::mat4 projection(0.0f);
 glm::mat4 view(1.0f);
 
 
 void readInput(GLFWwindow *window) {
-    const float time = glfwGetTime();
-
-    std::cout << "position: " << camera::position.x << ' ' << camera::position.y << ' ' << camera::position.z << ' ' << '\n';
-    std::cout << "rotation: " << camera::rotation.x << ' ' << camera::rotation.y << ' ' << camera::rotation.z << ' ' << '\n';
     camera::rotation.y = glm::mod(camera::rotation.y, 2 * pi);
 
     if (camera::rotation.x < -pi * 0.45f) {
@@ -58,29 +54,20 @@ void readInput(GLFWwindow *window) {
         camera::rotation.x = pi * 0.45f;
     }
 
-    glm::vec3 cameraForward = glm::normalize(
-        glm::vec3(
-            -glm::cos(camera::rotation.x) * glm::sin(camera::rotation.y),
-            -glm::sin(camera::rotation.x),
-             glm::cos(camera::rotation.x) * glm::cos(camera::rotation.y)
-        )
-    );
-    glm::vec3 cameraRight = glm::normalize(
-        glm::cross(
-            glm::vec3(0.0f, 1.0f, 0.0f), cameraForward
-        )
-    );
+    glm::vec3 cameraForward = glm::normalize(glm::vec3(
+        -glm::cos(camera::rotation.x) * glm::sin(camera::rotation.y),
+        -glm::sin(camera::rotation.x),
+         glm::cos(camera::rotation.x) * glm::cos(camera::rotation.y)
+    ));
+    glm::vec3 cameraRight = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraForward));
     glm::vec3 cameraUp = glm::normalize(glm::cross(cameraForward, cameraRight));
 
     setViewMatrix(view, camera::position, camera::position + cameraForward, cameraUp);
+    setPerspectiveProjectionMatrix(projection, fov, near, far, aspectRatio);
 
-    // setProjectionMatrix(projection, fov, near, far, aspectRatio);
-    projection = glm::perspectiveFovLH(glm::radians(fov), double(width), double(height), near, far);
-
-
+    const float time = glfwGetTime();
     pyramid::position[2] = sin(time) * 0.5f + 1.0f;
     pyramid::position[0] = cos(time) * 0.5f + 1.0f;
-    // pyramid::rotation[0] = time * 0.5f;
     setModelMatrix(pyramid::model, pyramid::position, pyramid::rotation, pyramid::scale);
 
 
@@ -159,27 +146,15 @@ int main() {
     glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(float), reinterpret_cast<void*>(0));
 
+
     // shaders go brrr
     GLuint pyramidShader = compileShaderProgram("../l2/shaders/vs_pyramid.glsl", "../l2/shaders/fs_pyramid.glsl");
 	glUseProgram(pyramidShader);
-
 
     GLuint pyramidModelLocation = glGetUniformLocation(pyramidShader, "model");
     GLuint pyramidProjectionLocation = glGetUniformLocation(pyramidShader, "projection");
     GLuint pyramidViewLocation = glGetUniformLocation(pyramidShader, "view");
 
-
-
-
-    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, glm::value_ptr(pyramid::model));
-    glUniformMatrix4fv(pyramidProjectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(pyramidViewLocation, 1, GL_FALSE, glm::value_ptr(view));
-
-
-
-    pyramid::position[2] = 1;
-    pyramid::position[0] = 1.5;
-    setModelMatrix(pyramid::model, pyramid::position, pyramid::rotation, 1);
 
 
     while(!glfwWindowShouldClose(window)) {
@@ -199,8 +174,7 @@ int main() {
         glUniformMatrix4fv(pyramidProjectionLocation, 1, false, glm::value_ptr(projection));
         glUniformMatrix4fv(pyramidViewLocation, 1, false, glm::value_ptr(view));
 
-        // glUniform3f(cube_view_position, camera::position.x, camera::position.y, camera::position.z);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 5);
 
 
         glfwSwapBuffers(window);
