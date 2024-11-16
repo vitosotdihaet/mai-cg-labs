@@ -12,9 +12,4 @@ out vec3 f_position;
 void main() {
     f_position = (model * vec4(position, 1.0)).xyz;
     gl_Position = projection * view * vec4(f_position, 1.0);
-    // gl_Position = vec4(position, 1.0);
 }
-
-// void main() {
-//     gl_Position = vec4(position.x, position.y, position.z, 1.0);
-// }

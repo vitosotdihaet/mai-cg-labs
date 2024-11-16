@@ -58,7 +58,7 @@ void setPerspectiveProjectionMatrix(glm::mat4 &m, const float fov, const double 
 
     m[0][0] = 1.0f / (aspectRatio * tanHalfFov);
     m[1][1] = 1.0f / tanHalfFov;
-    m[2][2] = far / (far - near);
+    m[2][2] = far / range;
     m[2][3] = 1.0f;
-    m[3][2] = -(near * far) / (far - near);
+    m[3][2] = -(near * far) / range;
 }
