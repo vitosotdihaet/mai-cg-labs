@@ -115,7 +115,7 @@ void update() {
     camera::update();
     setViewMatrix(camera::view, camera::position, camera::position + camera::forward, camera::up);
     setPerspectiveProjectionMatrix(camera::projection, camera::fov, camera::near, camera::far, aspectRatio);    
-    setModelMatrix(pyramid::model, pyramid::origin, pyramid::position, pyramid::rotation, pyramid::scale);
+    setModelMatrix(pyramid::model, pyramid::position, pyramid::rotation, pyramid::scale);
 }
 
 

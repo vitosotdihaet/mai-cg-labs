@@ -3,7 +3,7 @@
 
 
 
-void setModelMatrix(glm::mat4 &m, const glm::vec3 &origin, const glm::vec3 &shift, const glm::vec3 &rotation, const double scale) noexcept {
+void setModelMatrix(glm::mat4 &m, const glm::vec3 &shift, const glm::vec3 &rotation, const double scale) noexcept {
     glm::mat4 t(1.0f);
     t[3] = glm::vec4(shift.x, shift.y, shift.z, 1.0f);
 
