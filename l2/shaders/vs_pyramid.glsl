@@ -7,9 +7,11 @@ uniform mat4 projection;
 uniform mat4 view;
 
 
-out vec3 f_position;
+out vec3 world_position;
+out vec2 screen_position;
 
 void main() {
-    f_position = (model * vec4(position, 1.0)).xyz;
-    gl_Position = projection * view * vec4(f_position, 1.0);
+    world_position = (model * vec4(position, 1.0)).xyz;
+    gl_Position = projection * view * vec4(world_position, 1.0);
+    screen_position = gl_Position.xy;
 }

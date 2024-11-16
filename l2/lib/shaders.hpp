@@ -40,14 +40,14 @@ GLuint setupShader(const std::string_view shader_path, GLint type) {
 }
 
 
-static GLuint compileShaderProgram(const std::string_view vertex_shader_path, const std::string_view fragment_shader_path) {
-    GLuint vertex_shader = setupShader(vertex_shader_path, GL_VERTEX_SHADER);
-	GLuint fragment_shader = setupShader(fragment_shader_path, GL_FRAGMENT_SHADER);
+static GLuint compileVsFsProgram(const std::string_view vertexShaderPath, const std::string_view fragmentShaderPath) {
+    GLuint vertexShader = setupShader(vertexShaderPath, GL_VERTEX_SHADER);
+	GLuint fragmentShader = setupShader(fragmentShaderPath, GL_FRAGMENT_SHADER);
 
 	GLuint program = glCreateProgram();
     {
-		glAttachShader(program, vertex_shader);
-		glAttachShader(program, fragment_shader);
+		glAttachShader(program, vertexShader);
+		glAttachShader(program, fragmentShader);
 
 		glLinkProgram(program);
 
@@ -61,11 +61,11 @@ static GLuint compileShaderProgram(const std::string_view vertex_shader_path, co
 		}
 	}
 
-	glDetachShader(program, vertex_shader);
-	glDetachShader(program, fragment_shader);
+	glDetachShader(program, vertexShader);
+	glDetachShader(program, fragmentShader);
 
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 
     return program;
 }
