@@ -129,7 +129,7 @@ int main() {
         throw std::runtime_error("could not initialize GLAD");
     }
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowSizeCallback(window, onWindowResize);
 
 	glEnable(GL_CULL_FACE);
