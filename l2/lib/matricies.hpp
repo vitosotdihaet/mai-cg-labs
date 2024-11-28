@@ -37,18 +37,17 @@ void setModelMatrix(glm::mat4 &m, const glm::vec3 &shift, const glm::vec3 &rotat
 }
 
 
-// basically glm::LookAtLH implementation
 void setViewMatrix(glm::mat4 &m, const glm::vec3 &eye, const glm::vec3 &lookat, const glm::vec3 &worldUp) noexcept {
     glm::vec3 forward = glm::normalize(lookat - eye);
     glm::vec3 right = glm::normalize(glm::cross(worldUp, forward));
     glm::vec3 up = glm::cross(forward, right);
 
-    m[3][3] = 1.0f;
 
-    m[0][0] = right.x;               m[1][0] = right.y;            m[2][0] = right.z;
-    m[0][1] = up.x;                  m[1][1] = up.y;               m[2][1] = up.z;
-    m[0][2] = forward.x;             m[1][2] = forward.y;          m[2][2] = forward.z;
+    m[0][0] = right.x;               m[0][1] = up.x;               m[0][2] = forward.x;
+    m[1][0] = right.y;               m[1][1] = up.y;               m[1][2] = forward.y;
+    m[2][0] = right.z;               m[2][1] = up.z;               m[2][2] = forward.z;
     m[3][0] = -glm::dot(right, eye); m[3][1] = -glm::dot(up, eye); m[3][2] = -glm::dot(forward, eye);
+    m[3][3] = 1.0f;
 }
 
 
