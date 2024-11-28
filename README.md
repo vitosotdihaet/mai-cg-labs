@@ -1,5 +1,7 @@
 # Computer graphics labs
 
+2 вариант, задания в `tasks.pdf`
+
 Полезные ссылки:
 - [Изучаем OpenGL](https://learnopengl.com/)
 - [Документация OpenGL](https://docs.gl/)
