@@ -42,7 +42,7 @@ private:
     size_t indecesCount;
 
 public:
-    glm::mat4 model;
+    glm::mat4 model = glm::mat4(1.0f);
 
     glm::vec3 position = glm::vec3(0.0f);
     glm::vec3 rotation = glm::vec3(0.0f);
@@ -55,7 +55,8 @@ private:
     void glSetup();
 
 public:
-    Model(glm::mat4 &model, OBJModel obj, Shader shader);
+    Model(OBJModel obj, Shader shader, glm::vec3 position = glm::vec3(0.0f), glm::vec3 rotation = glm::vec3(0.0f), float scale = 1.0f);
+
     void update();
     void setModel();
     void glDraw();
