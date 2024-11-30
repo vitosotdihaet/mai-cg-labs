@@ -20,3 +20,4 @@ target_include_directories(glad PUBLIC vendor/glad/include)
 
 add_subdirectory(l2)
 add_subdirectory(l3)
+add_subdirectory(l6)
