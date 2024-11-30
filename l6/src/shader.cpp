@@ -4,7 +4,6 @@
 
 
 
-
 Shader::Shader(const std::string_view vertexShaderPath, const std::string_view fragmentShaderPath, const std::vector<GetShaderVariable> &variables) {
     GLuint vertexShader = this->setupShader(vertexShaderPath, GL_VERTEX_SHADER);
     GLuint fragmentShader = this->setupShader(fragmentShaderPath, GL_FRAGMENT_SHADER);
@@ -36,15 +35,8 @@ Shader::Shader(const std::string_view vertexShaderPath, const std::string_view f
 
     this->variables.reserve(variables.size());
     for (const GetShaderVariable &variable : variables) {
-        this->variables.push_back(ShaderVariable { variable.type, glGetUniformLocation(this->program, variable.name.c_str()), variable.data });
+        this->addVariable(variable);
     }
-
-    // GLuint pyramidModelLocation = glGetUniformLocation(this->program, "model");
-    // GLuint pyramidProjectionLocation = glGetUniformLocation(this->program, "projection");
-    // GLuint pyramidViewLocation = glGetUniformLocation(this->program, "view");
-
-    // GLuint pyramidCameraPosition = glGetUniformLocation(this->program, "camera_position");
-
 }
 
 GLuint Shader::setupShader(const std::string_view shader_path, GLint type) {
@@ -76,11 +68,11 @@ GLuint Shader::setupShader(const std::string_view shader_path, GLint type) {
     return shader;
 }
 
+#include <iostream>
 void Shader::addVariable(const GetShaderVariable &variable) {
     this->variables.push_back(ShaderVariable { variable.type, glGetUniformLocation(this->program, variable.name.c_str()), variable.data });
 }
 
-#include<iostream>
 void Shader::glUse() {
     glUseProgram(this->program);
 

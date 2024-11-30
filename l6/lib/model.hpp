@@ -1,16 +1,15 @@
+#pragma once
+
 #include <exception>
 #include <filesystem>
 #include <sstream>
 #include <string_view>
 #include <fstream>
-#include <stdlib.h>
 
 #include <glad/glad.h>
 #include <glm/matrix.hpp>
-#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -30,15 +29,12 @@ struct OBJModel {
 
     bool isCW = false;
 
-    OBJModel();
     OBJModel(const std::string_view path, bool isCW);
 };
 
 
 class Model {
 private:
-    glm::mat4 modelMatrix;
-
     OBJModel obj;
     Shader shader;
 
@@ -46,12 +42,21 @@ private:
     size_t indecesCount;
 
 public:
+    glm::mat4 model;
 
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f);
+    float scale = 1.0f;
+
+    const float movementSpeed = 0.1f;
+    const float rotationSpeed = 0.05f;
 
 private:
     void glSetup();
 
 public:
-    Model(glm::mat4 &modelMatrix, OBJModel obj, Shader shader);
+    Model(glm::mat4 &model, OBJModel obj, Shader shader);
+    void update();
+    void setModel();
     void glDraw();
 };

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <exception>
 #include <vector>
 #include <string>
@@ -10,6 +12,7 @@
 #include <GLFW/glfw3.h>
 
 
+
 enum ShaderVariableType {
 	VECTOR2,
 	VECTOR3,
@@ -18,6 +21,7 @@ enum ShaderVariableType {
 	MATRIX3,
 	MATRIX4,
 };
+
 
 
 struct GetShaderVariable {
@@ -45,5 +49,6 @@ public:
 
 	void addVariable(const GetShaderVariable &variable);
 
+	// evaluate variables
 	void glUse();
 };

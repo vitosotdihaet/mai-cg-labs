@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cinttypes>
+
 #include <glm/gtc/type_ptr.hpp>
+#include <stdlib.h>
 
 #include "model.hpp"
 
 
-OBJModel::OBJModel() {}
 
 OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) {
     std::filesystem::path objFilePath(path);
@@ -74,8 +75,9 @@ OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) 
 
 
 
-Model::Model(glm::mat4 &modelMatrix, OBJModel obj, Shader shader) : modelMatrix(modelMatrix), obj(obj), shader(shader) {
+Model::Model(glm::mat4 &model, OBJModel obj, Shader shader) : model(model), obj(obj), shader(shader) {
     this->glSetup();
+    this->shader.addVariable(GetShaderVariable { ShaderVariableType::MATRIX4, "model", glm::value_ptr(this->model) });
 }
 
 void Model::glSetup() {
@@ -143,7 +145,42 @@ void Model::glSetup() {
 }
 
 
+void Model::update() {
+    this->setModel();
+}
 
+void Model::setModel() {
+    glm::mat4 t(1.0f);
+    t[3] = glm::vec4(this->position.x, this->position.y, this->position.z, 1.0f);
+
+    const double xRotation = rotation.x;
+    float xCosine = cos(xRotation);
+    float xSine = sin(xRotation);
+    glm::mat4 xRotationMatrix(1.0f);
+    xRotationMatrix[1][1] = xCosine; xRotationMatrix[1][2] = -xSine;
+    xRotationMatrix[2][1] = xSine;   xRotationMatrix[2][2] = xCosine;
+
+    const double yRotation = rotation.y;
+    float yCosine = cos(yRotation);
+    float ySine = sin(yRotation);
+    glm::mat4 yRotationMatrix(1.0f);
+    yRotationMatrix[0][0] = yCosine; yRotationMatrix[0][2] = ySine;
+    yRotationMatrix[2][0] = -ySine;  yRotationMatrix[2][2] = yCosine;
+
+    const double zRotation = rotation.z;
+    float zCosine = cos(zRotation);
+    float zSine = sin(zRotation);
+    glm::mat4 zRotationMatrix(1.0f);
+    zRotationMatrix[0][0] = zCosine; zRotationMatrix[0][1] = -zSine;
+    zRotationMatrix[1][0] = zSine;   zRotationMatrix[1][1] = zCosine;
+
+    glm::mat4 r = xRotationMatrix * yRotationMatrix * zRotationMatrix;
+
+    glm::mat4 s(scale);
+    s[3][3] = 1.0f;
+
+    this->model = t * r * s;
+}
 
 void Model::glDraw() {
     glBindVertexArray(this->VAO);
