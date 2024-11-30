@@ -29,7 +29,7 @@ struct OBJModel {
 
     bool isCW = false;
 
-    OBJModel(const std::string_view path, bool isCW);
+    OBJModel(const std::string_view path, bool isCW = false);
 };
 
 

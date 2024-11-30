@@ -7,8 +7,15 @@
 #include "model.hpp"
 
 
+enum FaceType {
+    VERTICES,
+    VERTICES_UVS,
+    VERTICES_NORMALS,
+    VERTICES_UVS_NORMALS,
+};
 
-OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) {
+
+OBJModel::OBJModel(const std::string_view path, bool isCW) : isCW(isCW) {
     std::filesystem::path objFilePath(path);
     std::ifstream objFile(objFilePath);
 
@@ -38,14 +45,33 @@ OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) 
             this->normals.push_back(normal);
         } else if (prefix == "f") { // mapping to faces
             std::string element;
-            while (lineStream >> element) {
-                size_t slashCount = 0;
-                for (char e : element) { if (e == '/') { slashCount++; } }
 
-                if (slashCount == 0) { // only vertex
+            lineStream >> element;
+            size_t slashCount = 0;
+            FaceType faceType = FaceType::VERTICES;
+            for (size_t i = 0; i < element.size() - 1; ++i) {
+                if (element[i] == '/') {
+                    if (element[i + 1] == '/') {
+                        faceType = FaceType::VERTICES_NORMALS;
+                        break;
+                    }
+                    slashCount++;
+                }
+            }
+
+            if (faceType == FaceType::VERTICES) {
+                if (slashCount == 1) {
+                    faceType = FaceType::VERTICES_UVS;
+                } else if (slashCount == 2) {
+                    faceType = FaceType::VERTICES_UVS_NORMALS;
+                }
+            }
+
+            do {
+                if (faceType == FaceType::VERTICES) {
                     uint64_t vertexIndex = std::stoull(element);
                     this->vertexIndeces.push_back(vertexIndex);
-                } else if (slashCount == 1) { // vertex and a texture
+                } else if (faceType == FaceType::VERTICES_UVS) {
                     uint64_t vertexIndex;
                     uint64_t uvIndex;
 
@@ -53,7 +79,15 @@ OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) 
 
                     this->vertexIndeces.push_back(vertexIndex);
                     this->uvIndeces.push_back(uvIndex);
-                } else if (slashCount == 2) { // vertex, texture and a normal
+                } else if (faceType == FaceType::VERTICES_NORMALS) {
+                    uint64_t vertexIndex;
+                    uint64_t normalIndex;
+
+                    sscanf(element.c_str(), "%" SCNu64 "//%" SCNu64, &vertexIndex, &normalIndex);
+
+                    this->vertexIndeces.push_back(vertexIndex);
+                    this->normalIndeces.push_back(normalIndex);
+                } else if (faceType == FaceType::VERTICES_UVS_NORMALS) { // vertex, texture and a normal
                     uint64_t vertexIndex;
                     uint64_t uvIndex;
                     uint64_t normalIndex;
@@ -66,7 +100,7 @@ OBJModel::OBJModel(const std::string_view path, bool isCW = false) : isCW(isCW) 
                 } else {
                     std::cout << "Could not parse this shiet: " << element << '\n';
                 }
-            }
+            } while (lineStream >> element);
         } else {
             std::cout << "Parsing of prefix " << prefix << " is unimplemented: " << currentLine << '\n';
         }
