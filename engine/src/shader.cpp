@@ -68,15 +68,17 @@ GLuint Shader::setupShader(const std::string_view shader_path, GLint type) {
     return shader;
 }
 
-#include <iostream>
 void Shader::addVariable(const GetShaderVariable &variable) {
     this->variables.push_back(ShaderVariable { variable.type, glGetUniformLocation(this->program, variable.name.c_str()), variable.data });
 }
 
+// #include <iostream>
 void Shader::glUse() {
+    // std::cout << "prog: " << this->program << '\n';
     glUseProgram(this->program);
 
     for (const ShaderVariable &variable : this->variables) {
+        // std::cout << "var = " << variable.data << '\n';
         switch (variable.type) { // TODO: add other types
             case ShaderVariableType::VECTOR2:
                 glUniform2f(variable.location, ((GLfloat*) variable.data)[0], ((GLfloat*) variable.data)[1]);
@@ -94,6 +96,11 @@ void Shader::glUse() {
                 glUniformMatrix3fv(variable.location, 1, false, (GLfloat*) variable.data);
                 break;
             case ShaderVariableType::MATRIX4:
+                // std::cout << "shader =\n";
+                // std::cout << ((GLfloat*) variable.data)[0] << ' ' << ((GLfloat*) variable.data)[1] << ' ' << ((GLfloat*) variable.data)[2] << ' ' << ((GLfloat*) variable.data)[3] << '\n'; 
+                // std::cout << ((GLfloat*) variable.data)[4] << ' ' << ((GLfloat*) variable.data)[5] << ' ' << ((GLfloat*) variable.data)[6] << ' ' << ((GLfloat*) variable.data)[7] << '\n'; 
+                // std::cout << ((GLfloat*) variable.data)[8] << ' ' << ((GLfloat*) variable.data)[9] << ' ' << ((GLfloat*) variable.data)[10] << ' ' << ((GLfloat*) variable.data)[11] << '\n'; 
+                // std::cout << ((GLfloat*) variable.data)[12] << ' ' << ((GLfloat*) variable.data)[13] << ' ' << ((GLfloat*) variable.data)[14] << ' ' << ((GLfloat*) variable.data)[15] << '\n';
                 glUniformMatrix4fv(variable.location, 1, false, (GLfloat*) variable.data);
                 break;
         }

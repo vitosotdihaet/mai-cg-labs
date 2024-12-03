@@ -20,4 +20,4 @@ find_package(glm CONFIG REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ../vendor/glad/include)
 
 # link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glm::glm-header-only glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw glm::glm-header-only glad engine)

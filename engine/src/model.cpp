@@ -189,6 +189,12 @@ Model::Model(
 
 void Model::update() {
     this->setModel();
+
+    // std::cout << "model =\n";
+    // std::cout << this->model[0][0] << ' ' << this->model[0][1] << ' ' << this->model[0][2] << ' ' << this->model[0][3] << '\n'; 
+    // std::cout << this->model[1][0] << ' ' << this->model[1][1] << ' ' << this->model[1][2] << ' ' << this->model[1][3] << '\n'; 
+    // std::cout << this->model[2][0] << ' ' << this->model[2][1] << ' ' << this->model[2][2] << ' ' << this->model[2][3] << '\n'; 
+    // std::cout << this->model[3][0] << ' ' << this->model[3][1] << ' ' << this->model[3][2] << ' ' << this->model[3][3] << '\n'; 
 }
 
 void Model::setModel() {
@@ -231,8 +237,6 @@ void Model::setModel() {
 }
 
 void Model::glDraw() {
-    glBindVertexArray(this->VAO);
-
     this->shader.glUse();
 
     if (this->obj.isCW) {
@@ -241,5 +245,9 @@ void Model::glDraw() {
         glFrontFace(GL_CCW);
     }
 
+    glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, this->indecesCount);
+
+    // glUseProgram(0);
+    // glBindVertexArray(0);
 }

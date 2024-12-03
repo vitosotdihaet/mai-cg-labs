@@ -144,7 +144,7 @@ int main() {
     glGenVertexArrays(1, &pyramidVAO);
     glBindVertexArray(pyramidVAO);
 
-    // setup pyramid verticies
+    // setup pyramid vertices
     GLuint pyramidVBO;
     glGenBuffers(1, &pyramidVBO);
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO);
