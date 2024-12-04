@@ -87,8 +87,6 @@ int main() {
     glViewport(0, 0, width, height);
 
 
-    // TODO: why the fuck does this work?
-    // it has something to do with copying the .model matrix in shader
     models.reserve(10);
 
     models.emplace_back( // monkey
@@ -142,12 +140,6 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-
-        if (std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count() % 5 < 3) {
-            models[0].glDraw();
-        } else {
-            models[1].glDraw();
-        }
 
         for (Model &m : models) {
             m.glDraw();
