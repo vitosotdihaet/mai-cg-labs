@@ -28,17 +28,8 @@ void readInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera.position -= camera.forward * camera.movementSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera.position += camera.right * camera.movementSpeed;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera.position -= camera.right * camera.movementSpeed;
-
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) models[0].rotation.x += models[0].rotationSpeed;
-    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) models[0].rotation.y += models[0].rotationSpeed;
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) models[0].rotation.z += models[0].rotationSpeed;
-
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)        models[0].position.z += models[0].movementSpeed;
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)      models[0].position.z -= models[0].movementSpeed;
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)      models[0].position.x -= models[0].movementSpeed;
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)     models[0].position.x += models[0].movementSpeed;
-    if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)   models[0].position.y += models[0].movementSpeed;
-    if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) models[0].position.y -= models[0].movementSpeed;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) camera.position -= camera.up * camera.movementSpeed;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) camera.position += camera.up * camera.movementSpeed;
 }
 
 
