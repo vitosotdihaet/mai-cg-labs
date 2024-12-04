@@ -37,7 +37,7 @@ struct Camera {
 
 
     Camera() {}
-    Camera(glm::vec3 position, glm::vec3 rotation);
+    Camera(glm::vec3 position, glm::vec3 rotation = glm::vec3(0, 0, 0));
 
     void update(const double aspectRatio);
 

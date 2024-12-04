@@ -14,7 +14,7 @@ int32_t height = 600;
 
 double aspectRatio = (double) width / height;
 
-static Camera camera;
+static Camera camera(glm::vec3(0.0f, 0.0f, -10.0f));
 
 static std::vector<Model> models;
 
@@ -84,7 +84,7 @@ int main() {
 
     models.reserve(10);
 
-    models.emplace_back( // monkey
+    models.emplace_back( // susan
         OBJModel("./l3/assets/models/monkey.obj", true),
         Shader("./l3/shaders/vs_object.glsl", "./l3/shaders/fs_gray.glsl", std::vector<GetShaderVariable>({
             GetShaderVariable { ShaderVariableType::MATRIX4, "view", glm::value_ptr(camera.view) },
@@ -106,16 +106,16 @@ int main() {
         glm::vec3(0.0f, 0.0f, 0.0f)
     );
 
-    models.emplace_back( // monkey
-        OBJModel("./l3/assets/models/12958_Spider_Monkey_v1_l2.obj", true),
-        Shader("./l3/shaders/vs_object.glsl", "./l3/shaders/fs_colorful.glsl", std::vector<GetShaderVariable>({
+    models.emplace_back( // cone
+        OBJModel("./l3/assets/models/cone.obj", true),
+        Shader("./l3/shaders/vs_object.glsl", "./l3/shaders/fs_white.glsl", std::vector<GetShaderVariable>({
             GetShaderVariable { ShaderVariableType::MATRIX4, "view", glm::value_ptr(camera.view) },
             GetShaderVariable { ShaderVariableType::MATRIX4, "projection", glm::value_ptr(camera.projection) },
             GetShaderVariable { ShaderVariableType::VECTOR3, "camera_position", glm::value_ptr(camera.position) },
         })),
-        glm::vec3(1.0f, 0.0f, 1.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        0.1f
+        glm::vec3(3.0f, 0.0f, 4.0f),
+        glm::vec3(45.0f, 0.0f, 0.0f),
+        1.5f
     );
 
     
