@@ -1,8 +1,3 @@
-#include <iostream>
-#include <exception>
-#include <chrono>
-#include <thread>
-
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -128,7 +123,6 @@ int main() {
 
 
     while(!glfwWindowShouldClose(window)) {
-        auto now = std::chrono::system_clock::now();
         readInput(window);
         camera.update(aspectRatio);
 
