@@ -36,8 +36,7 @@ struct Camera {
     glm::vec2 lastMousePosition;
 
 
-    Camera() {}
-    Camera(glm::vec3 position, glm::vec3 rotation = glm::vec3(0, 0, 0));
+    Camera(glm::vec3 position = glm::vec3(0.0f), glm::vec3 rotation = glm::vec3(0, 0, 0));
 
     void update(const double aspectRatio);
 

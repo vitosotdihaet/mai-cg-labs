@@ -4,3 +4,4 @@
 #include "camera.hpp"
 #include "model.hpp"
 #include "shader.hpp"
+#include "light.hpp"
