@@ -16,7 +16,7 @@ void main() {
     const float light_linear_term = 0.1;
     const float light_quadratic_term = 0.03;
 
-    vec3 view_source = normalize(camera_position);
+    vec3 view_direction = normalize(camera_position - world_position);
     vec3 light_direction = normalize(light_position - world_position);
     float light_distance = length(light_position - world_position);
 
@@ -31,8 +31,7 @@ void main() {
 
     // specular
     vec3 reflect_direction = reflect(-light_direction, normal);
-    float specular_strength = max(0.0, dot(view_source, reflect_direction));
-    specular_strength = pow(specular_strength, 256.0);
+    float specular_strength = pow(max(0.0, dot(view_direction, reflect_direction)), 32.0);
     vec3 specular_light = specular_strength * light_color;
 
 

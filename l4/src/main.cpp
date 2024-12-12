@@ -44,6 +44,14 @@ void readInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)     l.position.x += 0.01;
     if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)   l.position.y += 0.01;
     if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) l.position.y -= 0.01;
+
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) l.color.r = std::max(0.0f, l.color.r - 0.01f);
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) l.color.g = std::max(0.0f, l.color.g - 0.01f);
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) l.color.b = std::max(0.0f, l.color.b - 0.01f);
+
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) l.color.r = std::min(l.color.r + 0.01f, 1.0f);
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) l.color.g = std::min(l.color.g + 0.01f, 1.0f);
+    if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) l.color.b = std::min(l.color.b + 0.01f, 1.0f);
 }
 
 
@@ -89,7 +97,7 @@ int main() {
 
     models.reserve(4);
 
-    rgb model_color(0.0f, 0.2f, 0.5f);
+    rgb model_color(1.0f, 1.0f, 1.0f);
 
     models.emplace_back(
         OBJModel("./l4/assets/models/monkey.obj", true),
