@@ -40,6 +40,5 @@ void main() {
 
     vec3 lighting = (ambient_light + diffuse_light + specular_light) * attenuation;
 
-
     c = vec4(model_color * lighting, 1.0);
 }

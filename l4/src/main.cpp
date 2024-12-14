@@ -74,7 +74,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(width, height, "Lab2 - 3D square pyramid", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, "Lab4 - Phong Lighting", NULL, NULL);
     if (window == NULL) {
         throw std::runtime_error("could not create OpenGL window");
     }
